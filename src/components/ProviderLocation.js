@@ -1,12 +1,12 @@
-import { useLoadScript } from "@react-google-maps/api"
-import Maps from "../components/Maps"
+import MapWithAutocomplete from "./Maps"
 
-export default function Home() {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "ENTER KEY HERE",
-    libraries: ["places"],
-  });
+function ProviderLocation() {
+  return (
+      <div className='map'>
+        <h2>Search in the box below to find a provider near you</h2>
+        <MapWithAutocomplete />
+      </div>
+  )
+}
 
-  if (!isLoaded) return <div>Loading...</div>;
-  return <Maps />
-};
+export default ProviderLocation

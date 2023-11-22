@@ -1,153 +1,124 @@
-import { useState, useMemo, useCallback, useRef } from "react"
-import {
-  GoogleMap,
-  Marker,
-  DirectionsRenderer,
-  Circle,
-  MarkerClusterer
-} from "@react-google-maps/api"
-// import Places from './Places'
-import Distance from './Distance'
-import './MapsStyles.css'
+import React, { useEffect } from 'react';
+import './MapsStyles.css'; // Make sure to include your CSS file
 
-export default function Maps() {
-  const [office, setOffice] = useState()
-  const [directions, setDirections] = useState()
-  const mapRef = useRef()
-  const center = useMemo(() => ({ lat: 43.45, lng: -80.49 }), [])
-  const options = useMemo(
-    () => ({
-      mapId: "b181cac70f27f5e6",
-      disableDefaultUI: true,
-      clickableIcons: false
-    }),
-    []
-  )
-  const onLoad = useCallback(map => (mapRef.current = map), [])
-  const houses = useMemo(() => generateHouses(center), [center])
+const MapWithAutocomplete = () => {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=ENTER-THE-KEY-HERE&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setTimeout(() => {
+        initAutocomplete();
+      }, 100);
+    };
 
-  const fetchDirections = house => {
-    if (!office) return
+    document.head.appendChild(script);
 
-    const service = new window.google.maps.DirectionsService()
-    service.route(
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  const initAutocomplete = () => {
+    const darkMapStyle = [
       {
-        origin: house,
-        destination: office,
-        travelMode: window.google.maps.TravelMode.DRIVING
+        elementType: 'geometry',
+        stylers: [{ color: '#242f3e' }],
       },
-      (result, status) => {
-        if (status === "OK" && result) {
-          setDirections(result)
+      {
+        elementType: 'labels.text.stroke',
+        stylers: [{ color: '#242f3e' }],
+      },
+      {
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#746855' }],
+      },
+      // Add more styles as needed
+    ];
+    
+  
+    const map = new window.google.maps.Map(document.getElementById('map'), {
+      center: { lat: 39.1031, lng: -84.5120 },
+      zoom: 13,
+      mapTypeId: 'roadmap',
+      styles: darkMapStyle, // Apply the dark theme styles
+    });
+  
+    const input = document.createElement('input'); // Create the input element
+  
+    // Ensure that the search-box-container element is available before appending
+const searchBoxContainer = document.getElementById('search-box-container');
+  if (searchBoxContainer) {
+    input.className = 'custom-search-box'; 
+
+    searchBoxContainer.appendChild(input);
+  
+      map.controls[window.google.maps.ControlPosition.TOP_CENTER].push(searchBoxContainer);
+  
+      const searchBox = new window.google.maps.places.SearchBox(input);
+  
+      map.addListener('bounds_changed', () => {
+        searchBox.setBounds(map.getBounds());
+      });
+  
+      let markers = [];
+  
+      searchBox.addListener('places_changed', () => {
+        const places = searchBox.getPlaces();
+  
+        if (places.length === 0) {
+          return;
         }
-      }
-    )
-  }
+  
+        markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+        markers = [];
+  
+        const bounds = new window.google.maps.LatLngBounds();
+  
+        places.forEach((place) => {
+          if (!place.geometry || !place.geometry.location) {
+            console.log('Returned place contains no geometry');
+            return;
+          }
+  
+          const icon = {
+            url: place.icon,
+            size: new window.google.maps.Size(71, 71),
+            origin: new window.google.maps.Point(0, 0),
+            anchor: new window.google.maps.Point(17, 34),
+            scaledSize: new window.google.maps.Size(25, 25),
+          };
+  
+          markers.push(
+            new window.google.maps.Marker({
+              map,
+              icon,
+              title: place.name,
+              position: place.geometry.location,
+            })
+          );
+  
+          if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+    }
+  };
 
   return (
-    <div className="container">
-      <div className="controls">
-        {/* <Places
-          setOffice={position => {
-            setOffice(position)
-            mapRef.current?.panTo(position)
-          }}
-        /> */}
-        {!office && <p>Enter the address of your provider.</p>}
-        {directions && <Distance leg={directions.routes[0].legs[0]} />}
+    <div>
+      <div id="search-box-container">
       </div>
-      <div className="map">
-        <GoogleMap
-          zoom={10}
-          center={center}
-          mapContainerClassName="map-container"
-          options={options}
-          onLoad={onLoad}
-        >
-          {directions && (
-            <DirectionsRenderer
-              directions={directions}
-              options={{
-                polylineOptions: {
-                  zIndex: 50,
-                  strokeColor: "#1976D2",
-                  strokeWeight: 5
-                }
-              }}
-            />
-          )}
-
-          {office && (
-            <>
-              <Marker
-                position={office}
-                icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
-              />
-
-              <MarkerClusterer>
-                {clusterer =>
-                  houses.map(house => (
-                    <Marker
-                      key={house.lat}
-                      position={house}
-                      clusterer={clusterer}
-                      onClick={() => {
-                        fetchDirections(house)
-                      }}
-                    />
-                  ))
-                }
-              </MarkerClusterer>
-
-              <Circle center={office} radius={15000} options={closeOptions} />
-              <Circle center={office} radius={30000} options={middleOptions} />
-              <Circle center={office} radius={45000} options={farOptions} />
-            </>
-          )}
-        </GoogleMap>
-      </div>
+      <div id="map" style={{ height: '600px' }}></div>
     </div>
-  )
-}
+  );
+};
 
-const defaultOptions = {
-  strokeOpacity: 0.5,
-  strokeWeight: 2,
-  clickable: false,
-  draggable: false,
-  editable: false,
-  visible: true
-}
-const closeOptions = {
-  ...defaultOptions,
-  zIndex: 3,
-  fillOpacity: 0.05,
-  strokeColor: "#8BC34A",
-  fillColor: "#8BC34A"
-}
-const middleOptions = {
-  ...defaultOptions,
-  zIndex: 2,
-  fillOpacity: 0.05,
-  strokeColor: "#FBC02D",
-  fillColor: "#FBC02D"
-}
-const farOptions = {
-  ...defaultOptions,
-  zIndex: 1,
-  fillOpacity: 0.05,
-  strokeColor: "#FF5252",
-  fillColor: "#FF5252"
-}
-
-const generateHouses = position => {
-  const _houses = []
-  for (let i = 0; i < 100; i++) {
-    const direction = Math.random() < 0.5 ? -2 : 2
-    _houses.push({
-      lat: position.lat + Math.random() / direction,
-      lng: position.lng + Math.random() / direction
-    })
-  }
-  return _houses
-}
+export default MapWithAutocomplete;
