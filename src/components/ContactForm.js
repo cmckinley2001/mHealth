@@ -15,9 +15,9 @@ const Form = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Check if the input is for the 'details' field
+    // This will check if the input is for the 'details' field
     if (name === 'details') {
-      // Check if the length exceeds the limit (200 characters)
+      // This will check if the length exceeds the limit of 200 characters
       if (value.length <= 200) {
         setCharCount(value.length);
         setFormData({
@@ -44,7 +44,7 @@ const Form = () => {
 
     const { name, email, subject, details } = formData;
 
-    // Validate email before submission
+    // Validate email before submission is made
     if (!validateEmail(email)) {
       alert('Please enter a valid email address.');
       return;

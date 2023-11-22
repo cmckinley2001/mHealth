@@ -7,7 +7,7 @@ const Footer = () => {
     <div className='footer'>
         <div className='footer-container'>
             <div className='location'>
-                <h4><FaSearchLocation size={20} style={{color: '#ffffff', marginRight: '2rem'}} />123 Tech St. Cincinnati, OH 45209</h4>
+                <h4><FaSearchLocation size={20} style={{color: '#ffffff', marginRight: '2rem'}} />123 Tech St. City, KY</h4>
             </div>
             <div className='phone' >
                 <h4><FaPhone size={20} style={{color: '#ffffff', marginRight: '2rem'}}/> 1-800-555-1234</h4>

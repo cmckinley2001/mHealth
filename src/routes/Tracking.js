@@ -8,7 +8,7 @@ const Tracking = () => {
   return (
     <div>
         <Navbar />
-        <HeroImage heading='TRACKING' text='Here is some text.' />
+        <HeroImage heading='TRACKING' text='Enter your expenses below.' />
         <TrackingSection />
         <Footer />
     </div>

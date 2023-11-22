@@ -10,6 +10,7 @@ As for Feature requirements, the following applies to the app:
   - The Contact Form under Details has a character count and will stop the user from going over 200 characters
 - Retrieve data from a third-party API and use it to display something within your app.
   - THIS IS IN PROCESS - WORKING TO USE GOOGLE API FOR MAPS AND PLACES
+  - API key is provided with the Google Form Submission
 - Develop your project using a common JavaScript framework such as React, Angular, or Vue.
   - App is built using React library
 

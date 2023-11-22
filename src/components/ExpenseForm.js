@@ -1,34 +1,12 @@
 import React, { useState } from 'react';
 import './ExpenseFormStyles.css';
 import CurrencyInput from 'react-currency-input-field';
-import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-// import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
+import ExpenseTable from './ExpenseTable';
+import { format, parseISO } from 'date-fns/fp';
 
 const ExpenseForm = () => {
   const currentDate = new Date();
-  const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+  const formattedDate = format('yyyy-MM-dd', currentDate);
 
   const [expenseDate, setExpenseDate] = useState(formattedDate);
   const [provider, setProvider] = useState('');
@@ -76,6 +54,13 @@ const ExpenseForm = () => {
   handleClear();
   };
 
+  // Delete a row
+  const handleDelete = (index) => {
+    const updatedExpenses = [...expenses];
+    updatedExpenses.splice(index, 1);
+    setExpenses(updatedExpenses);
+  };
+
   return (
     <div className='expenseForm'>
       <form>
@@ -101,37 +86,11 @@ const ExpenseForm = () => {
           Submit
         </button>
       </form>
-
-
-
-
-
-Display the expenses in a Material UI table
-{/* <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Provider</TableCell>
-              <TableCell>Detail</TableCell>
-              <TableCell>Amount</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {expenses.map((expense, index) => (
-              <TableRow key={index}>
-                <TableCell>{expense.date}</TableCell>
-                <TableCell>{expense.provider}</TableCell>
-                <TableCell>{expense.detail}</TableCell>
-                <TableCell>{expense.amount}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
+    <div className='ExpenseTable'>
+      <ExpenseTable expenses={expenses} onDelete={handleDelete} />
+    </div>
     </div>
   );
 };
-
 
 export default ExpenseForm;
