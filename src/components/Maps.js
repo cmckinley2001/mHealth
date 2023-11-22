@@ -4,7 +4,7 @@ import './MapsStyles.css'; // Make sure to include your CSS file
 const MapWithAutocomplete = () => {
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=ENTER-THE-KEY-HERE&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=ADDAPIKEY&libraries=places`;
     script.async = true;
     script.defer = true;
     script.onload = () => {

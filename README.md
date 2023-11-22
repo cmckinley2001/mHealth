@@ -10,7 +10,7 @@ As for Feature requirements, the following applies to the app:
   - The Contact Form under Details has a character count and will stop the user from going over 200 characters
 - Retrieve data from a third-party API and use it to display something within your app.
   - Display Google Map with ability to search for Places
-  - API key is provided with the Google Form Submission
+  - API key is provided with the Google Form Submission.  To add go to the Maps.js file under Components folder.  Update Line 7 where it says "ADDAPIKEY"
 - Develop your project using a common JavaScript framework such as React, Angular, or Vue.
   - App is built using React library
 
