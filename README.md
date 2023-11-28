@@ -8,6 +8,8 @@ As for Feature requirements, the following applies to the app:
   - Tracking page form only allows dates in the date field and the amount is based on US dollars and does not accept multiple decimal points or other characters that are not numerical (this is accomplished by npm package)
 - Analyze text and display useful information about it. (e.g. word/character count in an input field)
   - The Contact Form under Details has a character count and will stop the user from going over 200 characters
+- Use arrays, objects, sets or maps to store and retrieve information that is displayed in your app
+  - ExpenseForm.js utilizes Arrays to store and update Expenses
 - Retrieve data from a third-party API and use it to display something within your app.
   - Display Google Map with ability to search for Places
   - API key is provided with the Google Form Submission.  To add go to the Maps.js file under Components folder.  Update Line 7 where it says "ADDAPIKEY"
