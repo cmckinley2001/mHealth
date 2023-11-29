@@ -23,3 +23,9 @@ form input, textarea {
     border-color: rgba(255, 255, 255, .1);
     color: #f4f4f4;
 }
+
+.error-message {
+    color: red;
+    text-align: right;
+    margin-top: -15px; 
+  }

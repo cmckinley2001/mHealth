@@ -11,13 +11,12 @@ const Form = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [charCount, setCharCount] = useState(0);
+  const [emailError, setEmailError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // This will check if the input is for the 'details' field
     if (name === 'details') {
-      // This will check if the length exceeds the limit of 200 characters
       if (value.length <= 200) {
         setCharCount(value.length);
         setFormData({
@@ -33,10 +32,23 @@ const Form = () => {
     }
   };
 
-  // Regular expression for a simple email validation
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      email: value
+    });
+
+    if (value && !validateEmail(value)) {
+      setEmailError('Please enter a valid email address.');
+    } else {
+      setEmailError('');
+    }
   };
 
   const handleSubmit = (e) => {
@@ -44,19 +56,18 @@ const Form = () => {
 
     const { name, email, subject, details } = formData;
 
-    // Validate email before submission is made
     if (!validateEmail(email)) {
       alert('Please enter a valid email address.');
       return;
     }
 
-    // This is to process the form submission - can add more logic here if needed
     console.log('Form submitted:', formData);
   };
 
   const handleReset = () => {
     setFormData(initialFormData);
-    setCharCount(0); // Reset character count
+    setCharCount(0);
+    setEmailError('');
   };
 
   return (
@@ -65,7 +76,13 @@ const Form = () => {
         <label>Your Name</label>
         <input type='text' name='name' value={formData.name} onChange={handleInputChange} />
         <label>Email</label>
-        <input type='email' name='email' value={formData.email} onChange={handleInputChange} />
+        <input
+          type='email'
+          name='email'
+          value={formData.email}
+          onChange={handleEmailChange}
+        />
+        {emailError && <p className="error-message">{emailError}</p>}
         <label>Subject</label>
         <input type='text' name='subject' value={formData.subject} onChange={handleInputChange} />
         <label>
